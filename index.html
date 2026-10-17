@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0a1f"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon-192.png"><link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="preload" href="fonts/sora-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<title>MedVault – Health Records Vault</title>
+<style>
+@font-face{font-family:Sora;font-weight:400;font-display:swap;src:url(fonts/sora-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Sora;font-weight:600;font-display:swap;src:url(fonts/sora-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:Manrope;font-weight:400;font-display:swap;src:url(fonts/manrope-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:Manrope;font-weight:500;font-display:swap;src:url(fonts/manrope-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:Manrope;font-weight:600;font-display:swap;src:url(fonts/manrope-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-weight:400;font-display:swap;src:url(fonts/jetbrains-mono-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"JetBrains Mono";font-weight:500;font-display:swap;src:url(fonts/jetbrains-mono-latin-500-normal.woff2) format("woff2")}
+
+/* ---- Figma theme tokens ---- */
+:root,[data-accent=violet]{--g-d:#a78bfa;--g-l:#6d4fe0;--c-d:#60a5fa;--c-l:#2563eb;--pri:#5b4bd6}
+[data-accent=teal]{--g-d:#5eead4;--g-l:#0d9488;--c-d:#22d3ee;--c-l:#0891b2;--pri:#0b857c}
+[data-accent=blue]{--g-d:#60a5fa;--g-l:#1d6fe0;--c-d:#67e8f9;--c-l:#0e7490;--pri:#2563eb}
+[data-accent=rose]{--g-d:#fb7185;--g-l:#e11d48;--c-d:#fbbf24;--c-l:#d97706;--pri:#be123c}
+[data-accent=emerald]{--g-d:#4ade80;--g-l:#16a34a;--c-d:#2dd4bf;--c-l:#0d9488;--pri:#15803d}
+[data-accent=amber]{--g-d:#fbbf24;--g-l:#d97706;--c-d:#fb923c;--c-l:#ea580c;--pri:#b45309}
+:root,[data-mode=dark]{color-scheme:dark;--bg:#0a0a1f;--panel:#12122e;--ink:#ececff;--mut:#a1a1c7;--line:#2a2a5a;--glow:var(--g-d);--cyan:var(--c-d);--onglow:#0a0a1f;--soft:color-mix(in srgb,var(--g-d) 55%,white);--glass-a:rgba(20,20,48,.65);--glass-b:rgba(12,12,32,.55);--bad:#fb7185;--warn:#fbbf24;--acc:var(--glow)}
+[data-mode=light]{color-scheme:light;--bg:#f2f4fb;--panel:#fff;--ink:#12132b;--mut:#5a5d7d;--line:#d6d9ec;--glow:var(--g-l);--cyan:var(--c-l);--onglow:#fff;--soft:var(--g-l);--glass-a:rgba(255,255,255,.78);--glass-b:rgba(255,255,255,.58);--bad:#e11d48;--warn:#d97706;--acc:var(--glow)}
+[data-size=sm]{--fs:14px}[data-size=lg]{--fs:18px}
+[data-motion=off] *,[data-motion=off] *::before,[data-motion=off] *::after{animation:none!important;transition-duration:0s!important}
+
+*{box-sizing:border-box}
+html{font-size:var(--fs,16px);background:var(--bg)}
+body{margin:0;min-height:100dvh;font-family:Manrope,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;font-size:.875rem;transition:background-color .4s,color .4s;scrollbar-width:none;-webkit-tap-highlight-color:transparent}
+body::-webkit-scrollbar{display:none}
+::selection{background:var(--glow);color:var(--bg)}
+.fd,h1,.font-display{font-family:Sora,sans-serif;letter-spacing:-.02em;font-weight:400}
+.mono,h2,.lab{font-family:"JetBrains Mono",ui-monospace,monospace}
+h1{font-size:1.125rem;line-height:1.25;margin:0}
+h2{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut);font-weight:400;margin:1.4rem 0 .65rem}
+.lab{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--mut)}
+.mut{color:var(--mut);font-size:.8rem;line-height:1.5}
+.sub{color:var(--mut);font-size:.75rem;margin:0 0 .75rem}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--warn);margin-right:5px;vertical-align:middle}.dot.on{background:var(--glow)}
+a{color:var(--glow)}
+code{font-family:"JetBrains Mono",monospace;font-size:.75rem;color:var(--glow)}
+
+/* ---- Neural background ---- */
+#nb{position:fixed;inset:0;z-index:0;pointer-events:none}
+#nb>div,#nb canvas{position:absolute;inset:0}
+#nb .v1{background:radial-gradient(ellipse at 70% 10%,color-mix(in srgb,var(--pri) 28%,transparent),transparent 55%),radial-gradient(ellipse at 10% 90%,color-mix(in srgb,var(--cyan) 12%,transparent),transparent 50%)}
+#nb .v2{background:radial-gradient(ellipse at center,transparent 40%,var(--bg) 100%)}
+
+/* ---- Layout ---- */
+.wrap{position:relative;z-index:10;margin:0 auto;min-height:100dvh;width:100%;max-width:430px;padding:env(safe-area-inset-top,0) 20px 7rem}
+header.top{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 0 1.25rem}
+.brand{display:flex;align-items:center;gap:.75rem;min-width:0}
+.brand .mk{display:grid;place-items:center;width:2.25rem;height:2.25rem;flex:none;border-radius:.75rem;border:1px solid color-mix(in srgb,var(--glow) 50%,transparent);color:var(--glow);background:transparent;padding:0}
+.brand .lab{color:var(--glow)}
+.brand h1{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+.hb{display:flex;gap:.5rem}
+.rb2{position:relative;display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:50%;border:1px solid var(--line);color:var(--mut);background:transparent;padding:0}
+.rb2 .pip{position:absolute;right:.65rem;top:.65rem;width:6px;height:6px;border-radius:50%;background:var(--glow)}
+.i4{width:1rem;height:1rem}.i5{width:1.25rem;height:1.25rem}.i18{width:18px;height:18px}
+.rise{animation:rise .9s cubic-bezier(.2,.7,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes pulse-ring{0%{transform:scale(.6);opacity:.8}100%{transform:scale(2.4);opacity:0}}
+@keyframes arc{from{stroke-dashoffset:var(--from)}}
+@keyframes sheetup{from{transform:translateY(100%)}}
+@keyframes fade{from{opacity:0}}
+@keyframes pulse{50%{opacity:.4}}
+.pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}
+
+.glass,.card{background:linear-gradient(160deg,var(--glass-a),var(--glass-b));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid var(--line)}
+.card{border-radius:1rem;padding:1rem;margin-bottom:.75rem}
+.r3{border-radius:1.5rem}.r2{border-radius:1rem}
+.stack>*+*{margin-top:1.25rem}
+.row{display:flex;align-items:center;gap:.75rem}.sp{justify-content:space-between}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+.tile{padding:1rem}.tile .k{font-size:.75rem;color:var(--mut)}.tile .v{margin-top:.25rem;font-family:Sora,sans-serif;font-size:1.25rem;letter-spacing:-.02em}.tile .v small{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--mut)}
+.qa{display:flex;flex-direction:column;align-items:center;gap:.5rem;border-radius:1rem;padding:1rem .25rem;font-size:.72rem;color:var(--ink);background:none;border:1px solid var(--line);font-weight:400}
+.qa .ci,.ci{display:grid;place-items:center;width:2.5rem;height:2.5rem;border-radius:50%;background:color-mix(in srgb,var(--glow) 10%,transparent);color:var(--glow);flex:none}
+.qa{background:linear-gradient(160deg,var(--glass-a),var(--glass-b));-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+
+/* ---- Controls ---- */
+button,.btn{font:inherit;font-weight:500;background:var(--glow);color:var(--onglow);border:1px solid var(--glow);border-radius:999px;padding:.6rem 1.1rem;cursor:pointer;text-decoration:none;display:inline-block;text-align:center;transition:transform .15s,background .2s,color .2s,border-color .2s}
+button:active,.btn:active,.qa:active,.rc:active{transform:scale(.96)}
+button.g,.btn.g{background:transparent;color:var(--ink);border-color:var(--line)}
+button.d{background:var(--bad);border-color:var(--bad);color:#fff}
+button:disabled{opacity:.5;pointer-events:none}
+button:focus-visible,.btn:focus-visible,[role=button]:focus-visible,input:focus-visible{outline:2px solid var(--glow);outline-offset:2px}
+.wrap button.row-btn{background:none;border:0;color:inherit;font-weight:400}
+input,select,textarea{width:100%;padding:.7rem .9rem;border-radius:.9rem;border:1px solid var(--line);background:color-mix(in srgb,var(--panel) 70%,transparent);color:var(--ink);font:inherit;margin-bottom:.5rem;outline:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{border-color:var(--glow)}
+::placeholder{color:var(--mut);opacity:.7}
+.chips{display:flex;gap:.5rem;overflow-x:auto;margin:0 -20px .75rem;padding:0 20px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}
+.chips button{flex:none;white-space:nowrap;padding:.5rem 1rem;font-size:.75rem}
+.chips button.g{color:var(--mut)}
+.tag{display:inline-block;flex:none;font-family:"JetBrains Mono",monospace;font-size:10px;text-transform:uppercase;padding:.15rem .5rem;border-radius:999px;border:1px solid color-mix(in srgb,var(--glow) 40%,transparent);color:var(--glow);background:transparent;font-weight:400}
+.tag[style]{color:var(--onglow)!important;border-color:transparent}
+.tag.Positive{color:var(--glow)}.tag.Watch{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,transparent)}.tag.Action{color:var(--cyan);border-color:color-mix(in srgb,var(--cyan) 40%,transparent)}
+.sw{position:relative;width:2.75rem;height:1.5rem;border-radius:999px;background:var(--line);cursor:pointer;flex:none;transition:background .2s;border:0;padding:0}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;background:var(--bg);transition:left .2s}
+.sw.on{background:var(--glow)}.sw.on::after{left:22px}
+[dir=rtl] .sw::after{left:auto;right:2px}[dir=rtl] .sw.on::after{right:22px}
+.seg{display:flex;border:1px solid var(--line);border-radius:999px;padding:.25rem}
+.seg button{flex:1;background:transparent;border:0;color:var(--mut);font-size:.75rem;padding:.5rem}
+.seg button.on{background:var(--glow);color:var(--onglow)}
+.divide>*+*{border-top:1px solid var(--line)}
+.li{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:1rem;width:100%;text-align:left}
+.li .t{font-size:.875rem}.li .s{font-size:.75rem;color:var(--mut)}
+.rbtn{display:flex;align-items:center;gap:.75rem;width:100%;border-radius:1.5rem;padding:1rem;text-align:left;color:var(--ink);background:none}
+
+/* ---- Records ---- */
+.rc{display:flex;align-items:center;gap:.75rem;border-radius:1rem;padding:1rem;margin-bottom:.75rem;cursor:pointer;transition:transform .15s}
+.rb{display:grid;place-items:center;width:2.5rem;height:2.5rem;flex:none;border-radius:.75rem;background:color-mix(in srgb,var(--glow) 10%,transparent);color:var(--glow);font-family:"JetBrains Mono",monospace;font-size:10px;text-transform:uppercase}
+.rm{flex:1;min-width:0;display:block}.rt,.rs{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rt{font-size:.875rem;font-weight:500}.rs{font-size:.75rem;color:var(--mut)}
+.rd{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--mut)}
+img.doc{width:100%;border-radius:.9rem;margin:.5rem 0;border:1px solid var(--line)}
+.bars{display:flex;height:6rem;align-items:flex-end;gap:.5rem}
+.bars>div{flex:1;display:flex;flex-direction:column;align-items:center;gap:.5rem;height:100%;justify-content:flex-end}
+.bars i{display:block;width:100%;border-radius:.4rem .4rem 0 0;background:linear-gradient(to top,var(--pri),var(--glow))}
+.bars span{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--mut)}
+.hbar{display:flex;align-items:center;gap:.6rem;margin:.4rem 0}.hbar .n{width:7rem;font-size:.72rem;color:var(--mut)}.hbar .tr{flex:1;background:var(--line);border-radius:9px;overflow:hidden}.hbar .tr i{display:block;height:8px;background:linear-gradient(90deg,var(--pri),var(--glow));transition:width .4s}
+.av{display:grid;place-items:center;width:3.5rem;height:3.5rem;flex:none;border-radius:50%;background:linear-gradient(135deg,var(--glow),var(--cyan));color:var(--onglow);font-family:Sora,sans-serif;font-size:1.125rem}
+.qt .av2{display:grid;place-items:center;width:2.5rem;height:2.5rem;flex:none;border-radius:50%;background:color-mix(in srgb,var(--glow) 12%,transparent);color:var(--glow);font-weight:600;font-size:.75rem}
+.datebox{display:grid;place-items:center;width:3.5rem;height:3.5rem;flex:none;border-radius:1rem;background:color-mix(in srgb,var(--pri) 30%,transparent);color:var(--glow);font-family:"JetBrains Mono",monospace;font-size:10px;text-transform:uppercase;line-height:1.1;text-align:center}
+.datebox b{font-family:Sora,sans-serif;font-size:1.125rem;font-weight:400}
+
+/* ---- Orb ---- */
+.orb{position:relative;margin:0 auto;aspect-ratio:1;width:260px}
+.orb svg{position:absolute;inset:0;width:100%;height:100%}
+.orb .ring{position:absolute;left:50%;top:50%;width:10rem;height:10rem;margin:-5rem 0 0 -5rem;border-radius:50%;border:1px solid color-mix(in srgb,var(--glow) 60%,transparent);animation:pulse-ring 3.5s ease-out infinite}
+.orb .ct{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.orb .n{font-family:Sora,sans-serif;font-size:3rem;letter-spacing:-.02em}
+.arc{transition:stroke-dashoffset 1.6s cubic-bezier(.2,.7,.2,1)}
+
+/* ---- Nav ---- */
+nav.bt{position:fixed;left:0;right:0;bottom:0;z-index:20;margin:0 auto;max-width:430px;padding:0 1rem max(env(safe-area-inset-bottom),12px)}
+nav.bt .in{display:flex;justify-content:space-between;align-items:center;border-radius:999px;padding:.375rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.45)}
+nav.bt button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;border-radius:999px;padding:.5rem 0;font-size:10px;background:transparent;border:0;color:var(--mut);font-weight:400}
+nav.bt button.on{background:var(--glow);color:var(--onglow)}
+nav.bt button.plus{flex:none;width:3.25rem;height:3.25rem;margin:-1.1rem .25rem 0;justify-content:center;color:var(--onglow);background:linear-gradient(135deg,var(--glow),var(--cyan));box-shadow:0 6px 24px color-mix(in srgb,var(--glow) 50%,transparent)}
+
+/* ---- Sheet ---- */
+body.lk{overflow:hidden}
+.shw{position:fixed;inset:0;z-index:40}
+.shw .bd{position:absolute;inset:0;background:rgba(0,0,0,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.shw .sh{position:absolute;left:0;right:0;bottom:0;margin:0 auto;max-width:430px;max-height:88dvh;overflow-y:auto;border-radius:2rem 2rem 0 0;border-bottom:0;padding:.75rem 20px 2rem;background:var(--panel)!important;scrollbar-width:none}
+.shw.in .sh{animation:sheetup .5s cubic-bezier(.2,.7,.2,1)}.shw.in .bd{animation:fade .3s}
+.grab{margin:0 auto 1rem;height:4px;width:2.5rem;border-radius:99px;background:var(--line)}
+.sh h1{font-size:1.125rem}
+.sw-sw{display:grid;grid-template-columns:repeat(6,1fr);gap:.5rem}
+.sw-sw button{display:flex;flex-direction:column;align-items:center;gap:.4rem;background:none;border:0;padding:0;color:var(--mut);font-size:10px;font-weight:400}
+.sw-sw button span.c{display:grid;place-items:center;width:2.75rem;height:2.75rem;border-radius:50%}
+.sw-sw button.on span.c{box-shadow:0 0 0 2px var(--panel),0 0 0 4px var(--ink)}
+
+/* ---- Lock / splash ---- */
+#lock{position:fixed;inset:0;z-index:60;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center}
+#lock .mk{display:grid;place-items:center;width:4rem;height:4rem;border-radius:1.25rem;border:1px solid color-mix(in srgb,var(--glow) 50%,transparent);color:var(--glow);margin-bottom:1rem}
+#splash{position:fixed;inset:0;z-index:100;background:#0a0a1f;display:flex;flex-direction:column;gap:1rem;align-items:center;justify-content:center;transition:opacity .6s;color:#a78bfa}
+#splash .mk{display:grid;place-items:center;width:5rem;height:5rem;border-radius:1.5rem;border:1px solid rgba(167,139,250,.5);animation:pop .8s ease both}
+#splash .lab{color:#a78bfa;font-size:12px}
+#splash.out{opacity:0;pointer-events:none}
+@keyframes pop{from{opacity:0;transform:scale(.85)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head>
+<body><div id="nb" aria-hidden="true"><div class="v1"></div><canvas></canvas><div class="v2"></div></div>
+<div id="splash"><div class="mk"><svg viewBox="0 0 24 24" width="32" height="32" fill="currentColor"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg></div><div class="lab">MedVault</div></div><div id="app"></div>
+<script>
+const TAGS=["Prescription","Problem / Symptom","Blood Test","X-Ray","MRI","Vaccination","Discharge Summary"];
+const K=["home","rec","prov","prof","hello","search","lang"];
+const L={en:["Home","Records","Doctors","Profile","Hello","Search problem, medicine, doctor, date","Language"],bn:["হোম","রেকর্ড","ডাক্তার","প্রোফাইল","হ্যালো","সমস্যা, ওষুধ, ডাক্তার, তারিখ খুঁজুন","ভাষা"],hi:["होम","रिकॉर्ड","डॉक्टर","प्रोफ़ाइल","नमस्ते","समस्या, दवा, डॉक्टर, तारीख खोजें","भाषा"],ar:["الرئيسية","السجلات","الأطباء","الملف","مرحباً","ابحث عن مشكلة أو دواء أو طبيب أو تاريخ","اللغة"],ur:["ہوم","ریکارڈ","ڈاکٹر","پروفائل","ہیلو","مسئلہ، دوا، ڈاکٹر، تاریخ تلاش کریں","زبان"],es:["Inicio","Registros","Médicos","Perfil","Hola","Buscar problema, medicina, médico, fecha","Idioma"],fr:["Accueil","Dossiers","Médecins","Profil","Bonjour","Rechercher problème, médicament, médecin, date","Langue"],de:["Start","Akten","Ärzte","Profil","Hallo","Problem, Medikament, Arzt, Datum suchen","Sprache"],pt:["Início","Registos","Médicos","Perfil","Olá","Pesquisar problema, medicamento, médico, data","Idioma"],ru:["Главная","Записи","Врачи","Профиль","Привет","Поиск: проблема, лекарство, врач, дата","Язык"],tr:["Ana sayfa","Kayıtlar","Doktorlar","Profil","Merhaba","Sorun, ilaç, doktor, tarih ara","Dil"],id:["Beranda","Catatan","Dokter","Profil","Halo","Cari masalah, obat, dokter, tanggal","Bahasa"],zh:["首页","记录","医生","我的","你好","搜索病情、药品、医生、日期","语言"],ja:["ホーム","記録","医師","プロフィール","こんにちは","症状・薬・医師・日付を検索","言語"]};
+const t=k=>((L[S.lang]||L.en)[K.indexOf(k)])||L.en[K.indexOf(k)];
+const TL={en:"Tools",bn:"টুলস",hi:"टूल्स",ar:"الأدوات",ur:"ٹولز",es:"Herramientas",fr:"Outils",de:"Werkzeuge",pt:"Ferramentas",ru:"Инструменты",tr:"Araçlar",id:"Alat",zh:"工具",ja:"ツール"};
+const LC="aa ab af ak am an ar as av ay az ba be bg bi bm bn bo br bs ca ce ch co cs cv cy da de dv dz ee el en eo es et eu fa ff fi fj fo fr fy ga gd gl gn gu gv ha he hi hr ht hu hy ia id ig ii ik io is it iu ja jv ka kg ki kk kl km kn ko kr ks ku kv kw ky la lb lg li ln lo lt lu lv mg mh mi mk ml mn mr ms mt my na nb nd ne nl nn no nr nv ny oc om or os pa pl ps pt qu rm rn ro ru rw sa sc sd se sg si sk sl sm sn so sq sr ss st su sv sw ta te tg th ti tk tl tn to tr ts tt tw ty ug uk ur uz ve vi vo wa wo xh yi yo za zh zu fil ceb haw hmn yue ast bho chr gsw ilo mai mni nds sat sah tzm lus";
+const nm=(c,l)=>{try{const n=new Intl.DisplayNames([l],{type:"language"}).of(c);return n&&n!==c?n:""}catch(e){return ""}};
+const LN={};LC.split(" ").forEach(c=>{const e=nm(c,"en");if(e)LN[c]=(nm(c,c)||e)+(L[c]?" ✓":"")});
+const RTL="ar fa he ur ps sd ug yi dv".split(" ");
+const BR={Cardiology:"Key checks: BP, heart rate, ECG, lipids.\nRed flags: chest pain, fainting, breathlessness at rest.\nCommon drugs: aspirin, atenolol, statins.",Neurology:"Key checks: GCS, cranial nerves, reflexes, gait.\nRed flags: sudden weakness, severe headache, seizure.\nImaging: CT for acute bleed, MRI for lesions.",Orthopedics:"Key checks: range of motion, swelling, neurovascular status.\nRed flags: open fracture, compartment syndrome.\nImaging: X-ray in two views.",Pediatrics:"Key checks: weight-based dosing, growth percentiles, immunisation status.\nRed flags: fever in infants under 3 months, dehydration.\nAlways confirm doses by weight.",Dermatology:"Key checks: lesion type, distribution, duration, itch.\nRed flags: changing mole, non-healing ulcer.\nTip: photograph with a scale marker.",General:"Key checks: vitals, history, current medicines.\nRed flags: severe pain, breathing difficulty, confusion.\nTip: bring every prescription to each visit."};
+const DB={paracetamol:{max:4000},aspirin:{max:4000},ibuprofen:{max:2400},amoxicillin:{max:3000},metformin:{max:2550},atenolol:{max:100},omeprazole:{max:40},azithromycin:{max:500},warfarin:{max:10}};
+const IX=[["aspirin","ibuprofen","Both irritate the stomach and raise bleeding risk"],["warfarin","aspirin","High bleeding risk"],["warfarin","ibuprofen","High bleeding risk"]];
+const FQ={od:1,bd:2,tds:3,qid:4};
+let RX={text:"",rows:null};
+function check(txt){const rows=[],names=[];
+ txt.split("\n").map(s=>s.trim()).filter(Boolean).forEach(line=>{const m=line.match(/^([a-z]+)\s*(\d+(?:\.\d+)?)\s*mg\s*(?:x|×)?\s*(\d+|od|bd|tds|qid)?/i);
+  if(!m){rows.push([line,"warn","Can't read","Use: name, dose in mg, times per day","-"]);return}
+  const n=m[1].toLowerCase(),dose=+m[2],f=m[3]?(FQ[m[3].toLowerCase()]||+m[3]):1,d=DB[n];names.push(n);
+  if(!d){rows.push([line,"warn","Unknown drug","Not in the built-in list. Verify with a pharmacist.","-"]);return}
+  const tot=dose*f,N=n[0].toUpperCase()+n.slice(1);
+  if(tot>d.max){const one=dose>d.max?d.max:dose,k=dose>d.max?1:Math.max(1,Math.floor(d.max/dose));rows.push([line,"bad","Over daily limit",tot+" mg/day exceeds "+d.max+" mg/day",N+" "+one+"mg × "+k+"/day"])}
+  else rows.push([line,"ok","Within limit",tot+" of "+d.max+" mg/day",line])});
+ IX.forEach(([a,b,w])=>{if(names.includes(a)&&names.includes(b))rows.push([a+" + "+b,"bad","Interaction",w,"Review with the prescriber"])});return rows}
+const Q=[["📖","There is no disease that Allah has sent down except that He has also sent down its cure.","Hadith · Sahih al-Bukhari"],["📖","Make use of medical treatment, for Allah has not made a disease without appointing a remedy for it.","Hadith · Sunan Abi Dawud"],["📖","There are two blessings many people lose: health and free time.","Hadith · Sahih al-Bukhari"],["📖","Your body has a right over you.","Hadith · Sahih al-Bukhari"],["H","Wherever the art of medicine is loved, there is also a love of humanity.","Hippocrates (attributed)"],["FN","The very first requirement in a hospital is that it should do the sick no harm.","Florence Nightingale"],["WO","The good physician treats the disease; the great physician treats the patient who has the disease.","Sir William Osler"]];
+function tools(){const rx=S.tl==="rx";
+ let o=head("Tools","Prescription check and branch guide")+`<div class="chips"><button class="${rx?"":"g"}" onclick="set(()=>S.tl='rx')">Prescription check</button><button class="${S.tl==="br"?"":"g"}" onclick="set(()=>S.tl='br')">Branches</button><button class="${S.tl==="near"?"":"g"}" onclick="set(()=>S.tl='near')">📍 Nearby</button></div>`;
+ if(rx){o+=`<div class="card"><p class="mut">One medicine per line, e.g. <code>Paracetamol 1000mg 6</code> or <code>Amoxicillin 500mg tds</code>.</p><textarea id="rx" rows="5" placeholder="Paracetamol 1000mg 6&#10;Aspirin 300mg bd&#10;Ibuprofen 400mg tds">${esc(RX.text)}</textarea><button onclick="RX.text=$('#rx').value;RX.rows=check(RX.text);render()">Check prescription</button></div>`;
+  if(RX.rows)o+=(RX.rows.length?RX.rows.map(r=>`<div class="card"><b>${esc(r[0])}</b> <span class="tag" style="background:${r[1]==="ok"?"var(--acc)":r[1]==="bad"?"var(--bad)":"#f2a93b"};color:#fff">${r[2]}</span><div class="mut">${esc(r[3])}</div>${r[4]!=="-"?`<div>✔ ${esc(r[4])}</div>`:""}</div>`).join("")+`<button class="g" style="width:100%" onclick="set(()=>{S.records.unshift({fam:S.fam,title:'Prescription check',tag:'Prescription',branch:'General',date:new Date().toISOString().slice(0,10),doctor:'',hospital:'',notes:'',problem:'',meds:RX.text,file:null});S.tab='rec'})">Save as prescription record</button>`:'<p class="mut">Enter at least one line.</p>')+`<p class="mut">Built-in adult limits and a few interactions only. Confirm with a doctor or pharmacist; a real drug database is needed for clinical use.</p>`}
+ else if(S.tl==="near")o+=near();else{o+=`<div class="chips">${Object.keys(BR).map(b=>`<button class="${S.bn===b?"":"g"}" onclick="set(()=>S.bn='${b}')">${b}</button>`).join("")}</div>`+BR[S.bn].split("\n").map(l=>`<div class="card"><b>${esc(l.split(":")[0])}</b><div class="mut">${esc(l.split(":").slice(1).join(":").trim())}</div></div>`).join("")+`<p class="mut">${recs().filter(r=>r.branch===S.bn).length} of your records are in ${S.bn}. Reference only, not medical advice.</p>`}
+ return o}
+let NR={type:"hospital",st:"idle",items:[],pos:null,msg:""};
+const NQ={hospital:'[amenity=hospital]',clinic:'[amenity~"^(clinic|doctors)$"]',pharmacy:'[amenity=pharmacy]'};
+const km=(a,b,c,d)=>{const r=x=>x*Math.PI/180,h=Math.sin(r(c-a)/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(r(d-b)/2)**2;return 12742*Math.asin(Math.sqrt(h))};
+const gmap=()=>NR.pos?`https://www.google.com/maps/search/${NR.type}/@${NR.pos[0]},${NR.pos[1]},14z`:`https://www.google.com/maps/search/${NR.type}+near+me`;
+function findNear(){NR.st="loc";NR.msg="";NR.items=[];render();
+ if(!navigator.geolocation){NR.st="err";NR.msg="Location isn't available on this device.";return render()}
+ navigator.geolocation.getCurrentPosition(async p=>{NR.pos=[p.coords.latitude,p.coords.longitude];NR.st="load";render();
+  try{let els=[];for(const rad of [3000,10000,25000]){const q=`[out:json][timeout:20];nwr(around:${rad},${NR.pos[0]},${NR.pos[1]})${NQ[NR.type]};out center 40;`;
+    const r=await fetch("https://overpass-api.de/api/interpreter",{method:"POST",body:"data="+encodeURIComponent(q)});if(!r.ok)throw 0;els=(await r.json()).elements;if(els.length>=5)break}
+   NR.items=els.map(e=>{const g=e.tags||{},la=e.lat??(e.center&&e.center.lat),lo=e.lon??(e.center&&e.center.lon);return{n:g.name||g["name:en"]||"Unnamed "+NR.type,la,lo,d:km(NR.pos[0],NR.pos[1],la,lo),ph:g.phone||g["contact:phone"]||"",ad:[g["addr:street"],g["addr:city"]].filter(Boolean).join(", ")}}).filter(x=>x.la!=null).sort((a,b)=>a.d-b.d).slice(0,15);NR.st="done"}
+  catch(e){NR.st="err";NR.msg="Couldn't load nearby places here (outside requests may be blocked in this preview, or you're offline). Use the Maps button below."}
+  render()},e=>{NR.st="err";NR.msg=e.code===1?"Location permission was denied. Allow it in your browser, or use the Maps button below.":"Couldn't get your location.";render()},{enableHighAccuracy:true,timeout:15000})}
+function near(){const T=["hospital","clinic","pharmacy"],busy=NR.st==="loc"||NR.st==="load";
+ let o=`<div class="chips">${T.map(x=>`<button class="${NR.type===x?"":"g"}" onclick="NR.type='${x}';NR.st='idle';NR.items=[];NR.msg='';render()">${x[0].toUpperCase()+x.slice(1)}</button>`).join("")}</div><button style="width:100%" ${busy?"disabled":""} onclick="findNear()">${busy?"Searching…":"Find nearest "+NR.type}</button>`;
+ if(NR.msg)o+=`<div class="card mut" style="margin-top:10px">${esc(NR.msg)}</div>`;
+ o+=NR.items.map((x,i)=>`<div class="card" style="margin-top:10px"><div class="row sp"><b>${esc(x.n)}</b><span class="tag">${x.d<1?Math.round(x.d*1000)+" m":x.d.toFixed(1)+" km"}</span></div><div class="mut">${esc(x.ad)}</div><div class="row" style="margin-top:8px"><a class="btn" href="https://www.google.com/maps/dir/?api=1&destination=${x.la},${x.lo}" target="_blank" rel="noopener">Directions</a>${x.ph?`<a class="btn g" href="tel:${esc(x.ph.replace(/[^\d+]/g,""))}">Call</a>`:""}${S.places.some(p=>p.n===x.n&&p.la===x.la&&p.lo===x.lo)?`<span class="mut">★ Saved</span>`:`<button class="g" onclick="savePlace(${i})">☆ Save</button>`}</div></div>`).join("");
+ if(NR.st==="done"&&!NR.items.length)o+='<div class="card mut" style="margin-top:10px">Nothing found within 25 km in the map data. Try the Maps button.</div>';
+ return o+savedList()+`<a class="btn g" style="display:block;text-align:center;margin-top:10px" href="${gmap()}" target="_blank" rel="noopener">Open ${NR.type} search in Maps</a><p class="mut">Map data from OpenStreetMap may be incomplete, so confirm opening hours by phone. In an emergency, call your local emergency number instead.</p>`}
+const dirUrl=x=>x.la!=null?`https://www.google.com/maps/dir/?api=1&destination=${x.la},${x.lo}`:`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(x.n+" "+(x.ad||""))}`;
+function savePlace(i){const x=NR.items[i];if(S.places.some(p=>p.n===x.n&&p.la===x.la&&p.lo===x.lo))return;set(()=>S.places.push({n:x.n,la:x.la,lo:x.lo,ph:x.ph,ad:x.ad,type:NR.type}))}
+function addPlace(){const n=$("#sn").value.trim();if(!n){$("#sn").placeholder="Name required";return}set(()=>S.places.push({n,la:null,lo:null,ph:$("#sp").value.trim(),ad:$("#sa").value.trim(),type:$("#st").value}))}
+function savedList(){return `<h2>⭐ Saved places</h2>${S.places.map((x,i)=>`<div class="card"><div class="row sp"><b>${esc(x.n)}</b><span class="tag">${esc(x.type)}</span></div><div class="mut">${esc(x.ad)}</div>${x.ph?`<div class="mut">📞 ${esc(x.ph)}</div>`:""}<div class="row" style="margin-top:8px"><a class="btn" href="${esc(dirUrl(x))}" target="_blank" rel="noopener">Directions</a>${x.ph?`<a class="btn g" href="tel:${esc(String(x.ph).replace(/[^\d+]/g,""))}">Call</a>`:""}<button class="g" onclick="if(confirm('Remove this place?'))set(()=>S.places.splice(${i},1))">Remove</button></div></div>`).join("")||'<p class="mut">Nothing saved yet. Tap ☆ Save on a result, or add one below. Saved places work offline.</p>'}<div class="card"><input id="sn" placeholder="Hospital / clinic name"><input id="sp" type="tel" placeholder="Phone"><input id="sa" placeholder="Address"><select id="st"><option>hospital</option><option>clinic</option><option>pharmacy</option></select><button style="width:100%" onclick="addPlace()">Save place</button></div>`}
+const VER="1.3.0",FEEDBACK_EMAIL="";
+const CL=[{v:"1.3.0",d:"October 2026",n:["Optional cloud sync: sign in to back up your vault and open it on other devices","Your data still stays on this device unless you turn sync on"]},{v:"1.2.0",d:"October 2026",n:["New look: glass cards, neural background, vault score orb and pill navigation","Customise theme: dark, light or system, six accent colours, text size, effects","New Insights tab with record activity and smart findings","Log vitals and an emergency card; real offline support","Fonts and graphics now bundled, nothing loaded from other sites"]},{v:"1.1.0",d:"October 2026",n:["New MedVault logo and matching colors","About screen with privacy policy and feedback","Terms of use","This What's new list"]},{v:"1.0.0",d:"October 2026",n:["Health records vault with photos, prescriptions and problems","Family and relative profiles","Prescription checker and medical branches","Nearby hospitals, clinics and pharmacies with saved places","Search by year, 190 languages, offline use"]}];
+const clHtml=l=>l.map(c=>`<div class="card"><b>v${c.v}</b> <span class="mut">${c.d}</span><ul style="margin:6px 0 0;padding-left:18px">${c.n.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("");
+let FB={type:"Idea",text:"",msg:""};
+async function sendFb(){const type=$("#fbk").value,text=$("#fbt").value.trim();FB.type=type;FB.text=text;
+ if(!text){FB.msg="Please write a few words first.";return render()}
+ const subj="MedVault feedback: "+type,body=text+"\n\n—\nMedVault "+VER+" · language "+S.lang+" · "+(navigator.onLine?"online":"offline");
+ try{if(FEEDBACK_EMAIL){location.href="mailto:"+FEEDBACK_EMAIL+"?subject="+encodeURIComponent(subj)+"&body="+encodeURIComponent(body);FB.msg="Opening your email app…"}
+  else if(navigator.share){await navigator.share({title:subj,text:body});FB.text="";FB.msg="Thank you! Your feedback was shared."}
+  else{await navigator.clipboard.writeText(subj+"\n\n"+body);FB.msg="Copied to your clipboard. Paste it into an email or message to the developer."}}
+ catch(e){FB.msg="Couldn't send it from here. Select and copy your message to send it manually."}
+ render()}
+function about(){return head("About","Version "+VER)+`<button class="g" onclick="go('prof')">← Back to profile</button>
+ 
+ <div class="card"><b>MedVault ${VER}</b><div class="mut">A free health records vault for you and your family. It works offline and your data stays on your device.</div></div>
+ <h2>Privacy policy</h2><div class="card mut" style="line-height:1.55;font-size:14px">
+ <p><b>What is stored.</b> The records, photos, notes, medicines, doctors, saved places, reminders and family profiles you enter, plus your settings. They are kept in this device's app storage. If you turn on optional cloud sync, a copy is also stored in your own account on the sync service (Supabase) and is readable only by you.</p>
+ <p><b>What we don't do.</b> No ads, no tracking or analytics, no selling or sharing of your data, and no use of it to train models. Nothing is uploaded unless you sign in to optional cloud sync.</p>
+ <p><b>Location.</b> Only when you tap Nearby. Your coordinates are sent to the free OpenStreetMap Overpass service to find places, and are not saved. Opening a Maps link takes you to Google Maps, which has its own policy.</p>
+ <p><b>Sharing and backups.</b> The sharing switches only keep a log of your choice; they don't send anything. Backup and export files are saved where you choose and are not encrypted, so keep them safe.</p>
+ <p><b>PIN lock.</b> It hides the screen on this device. It does not encrypt your data.</p>
+ <p><b>Your control.</b> Delete any record, or erase everything from the Menu. Clearing browser data or uninstalling the app also deletes everything, so make a backup first.</p>
+ <p><b>Family information.</b> Add a relative's health details only with their permission.</p>
+ <p><b>Not medical advice.</b> MedVault stores information and gives simple reference checks. It does not replace a doctor or pharmacist. In an emergency, call your local emergency number.</p>
+ <p>Last updated: October 2026.</p></div>
+ <h2>Terms of use</h2><div class="card mut" style="line-height:1.55;font-size:14px">
+ <p><b>1. Agreement.</b> By using MedVault you agree to these terms. If you don't agree, please don't use the app.</p>
+ <p><b>2. Not medical advice.</b> MedVault stores your information and offers general reference checks. It does not diagnose or treat anything. Always ask a qualified doctor or pharmacist, and never delay care because of something in the app. In an emergency, call your local emergency number.</p>
+ <p><b>3. Your data, your responsibility.</b> Your records are stored on your device, plus your cloud account if you turn sync on. You are responsible for backups, your PIN and your device's security. If the device is lost or its data is cleared, your records can't be recovered.</p>
+ <p><b>4. Accuracy.</b> The prescription checker knows only a few medicines and basic rules, and nearby places come from community map data that can be wrong or out of date. Check important details with a professional or by phone.</p>
+ <p><b>5. Acceptable use.</b> Store only your own information, or a relative's with their permission. Don't use the app to harm others or to break the law.</p>
+ <p><b>6. Free, as is.</b> MedVault is free and provided as it is, without warranties. To the extent the law allows, the developer is not liable for losses that result from using it.</p>
+ <p><b>7. Changes.</b> The app and these terms may change. Continuing to use MedVault after a change means you accept it. Questions? Use Send feedback below.</p></div>
+ <h2>Send feedback</h2><div class="card"><select id="fbk">${["Idea","Bug","Translation","Other"].map(x=>`<option ${FB.type===x?"selected":""}>${x}</option>`).join("")}</select>
+ <textarea id="fbt" rows="4" placeholder="Tell us what to fix or add...">${esc(FB.text)}</textarea>
+ <button style="width:100%" onclick="sendFb()">Send feedback</button>${FB.msg?`<p class="mut">${esc(FB.msg)}</p>`:""}<p class="mut" style="font-size:12px">Only your message, the app version, language and online status are included. Your records are never attached.</p></div>
+ <h2>What's new</h2>${clHtml(CL)}
+ <h2>Credits</h2><div class="card mut" style="font-size:14px">Fonts: Sora, Manrope, JetBrains Mono (SIL OFL).<br>Nearby places: © OpenStreetMap contributors (ODbL).<br>Quotes: translations of hadith and public attributions; please verify before publishing.</div>`}
+function byYear(l){if(!l.length)return'<p class="mut">Nothing found.</p>';const s=[...l].sort((a,b)=>(b.date||"").localeCompare(a.date||""));let y="",o="";s.forEach(r=>{const Y=(r.date||"").slice(0,4)||"—";if(Y!==y){y=Y;o+=`<h2>${Y}</h2>`}o+=card(r)});return o}
+/* ===== MedVault UI (Figma theme) ===== */
+const $=s=>document.querySelector(s),esc=t=>String(t??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const IC={home:"M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1z",file:"M6 2h8l5 5v15H6zM14 2v5h5M9 13h6M9 17h6",spark:"M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5L18 18M18 6l-2.5 2.5M8.5 15.5L6 18",user:"M12 12a4 4 0 100-8 4 4 0 000 8zM4 21a8 8 0 0116 0",scan:"M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M4 12h16",sos:"M12 2l9 4v6c0 5-4 8.5-9 10-5-1.5-9-5-9-10V6z",bell:"M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9M10 21a2 2 0 004 0",chev:"M9 6l6 6-6 6",back:"M15 6l-6 6 6 6",sliders:"M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6",plus:"M12 5v14M5 12h14",tools:"M14.7 6.3a4 4 0 00-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 005.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z",steth:"M6 3v6a4 4 0 008 0V3M10 13v2a5 5 0 0010 0v-2M20 8a2 2 0 100 4 2 2 0 000-4z"};
+const Ic=(n,c="i5")=>`<svg viewBox="0 0 24 24" class="${c}" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="${IC[n]}"/></svg>`;
+const Cross=c=>`<svg viewBox="0 0 24 24" class="${c}" fill="currentColor"><path d="M9 2h6v7h7v6h-7v7H9v-7H2V9h7z"/></svg>`;
+const ACC=[["violet","Violet","#a78bfa"],["teal","Teal","#5eead4"],["blue","Blue","#60a5fa"],["rose","Rose","#fb7185"],["emerald","Emerald","#4ade80"],["amber","Amber","#fbbf24"]];
+const ABB={"Prescription":"Rx","Problem / Symptom":"Sx","Blood Test":"Lab","X-Ray":"XR","MRI":"MRI","Vaccination":"Vax","Discharge Summary":"DS"};
+const DTH={mode:"dark",accent:"violet",size:"md",neural:true,motion:true};
+let S={tab:"home",prev:"home",q:"",tag:"All",br:"All",tl:"rx",bn:"Cardiology",fam:0,open:null,sheet:null,unlocked:false,
+ family:[{n:"Me",blood:"",allergies:"",emerg:"",vitals:{}}],records:[],
+ docs:[{n:"Dr. Rahman",sp:"General",shared:{}}],hist:[],rem:[],places:[],seen:"",pin:"",lang:"en",lastBackup:0,th:{...DTH}};
+try{const x=JSON.parse(localStorage.getItem("medvault")||"null");if(x){
+ if(!x.th&&x.theme)x.th={...DTH,mode:x.theme==="auto"?"system":x.theme};
+ S={...S,...x,th:{...DTH,...(x.th||{})},tab:"home",open:null,sheet:null,unlocked:false}}}catch(e){}
+const TRANS=["tab","prev","open","sheet","unlocked","q","tag","br","wn","ab","menu"];
+function save(keep){if(!keep)S.mod=Date.now();try{const c={...S};TRANS.forEach(k=>delete c[k]);localStorage.setItem("medvault",JSON.stringify(c))}catch(e){alert("Storage is full. Download a backup from Profile and delete old images.")}if(!keep)cloudQueue()}
+function set(f){f();save();render()}
+
+/* ---- optional cloud sync (Supabase REST, no library, off until configured) ---- */
+const SB_URL="",SB_KEY="";/* paste your Supabase Project URL and anon/publishable key; see SUPABASE-SETUP.md */
+const CD={a:null,msg:"",t:0,run:false};
+try{CD.a=JSON.parse(localStorage.getItem("medvault-auth")||"null")}catch(e){}
+const cloudOn=()=>!!(SB_URL&&SB_KEY);
+async function sb(path,opt={},tok){const h={apikey:SB_KEY,"Content-Type":"application/json",...(opt.headers||{})};if(tok)h.Authorization="Bearer "+tok;
+ const r=await fetch(SB_URL.replace(/\/$/,"")+path,{...opt,headers:h});let j=null;try{j=await r.json()}catch(e){}
+ if(!r.ok)throw new Error((j&&(j.error_description||j.msg||j.message||j.error))||("HTTP "+r.status));return j}
+function setAuth(j){CD.a={tok:j.access_token,ref:j.refresh_token,exp:Date.now()+(j.expires_in||3600)*1000,uid:j.user.id,email:j.user.email};localStorage.setItem("medvault-auth",JSON.stringify(CD.a))}
+async function cloudToken(){if(!CD.a)throw new Error("Not signed in");
+ if(CD.a.exp-Date.now()<60000){const j=await sb("/auth/v1/token?grant_type=refresh_token",{method:"POST",body:JSON.stringify({refresh_token:CD.a.ref})});setAuth(j)}return CD.a.tok}
+const snap=()=>{const c={...S};[...TRANS,"pin","lastBackup"].forEach(k=>delete c[k]);return c};
+async function cloudAuth(up){const email=$("#cle").value.trim(),password=$("#clp").value;
+ if(!email||password.length<6){CD.msg="Enter your email and a password of at least 6 characters.";return render()}
+ CD.msg=up?"Creating account…":"Signing in…";render();
+ try{const j=await sb(up?"/auth/v1/signup":"/auth/v1/token?grant_type=password",{method:"POST",body:JSON.stringify({email,password})});
+  if(!j.access_token){CD.msg="Check your email to confirm your account, then sign in.";return render()}
+  setAuth(j);log("Cloud sync turned on");save(1);await cloudSync()}catch(e){CD.msg=e.message;render()}}
+async function cloudSync(){if(!cloudOn()||!CD.a||!navigator.onLine||CD.run)return;CD.run=true;let act="none";
+ try{const t=await cloudToken();
+  const rows=await sb("/rest/v1/vaults?select=data&user_id=eq."+CD.a.uid,{},t);
+  const rd=rows[0]&&rows[0].data,rm=rd?+rd.mod||0:0,lm=+S.mod||0;
+  act=!rd?"push":rm>lm?"pull":lm>rm?"push":"none";
+  if(act==="pull"){if(lm&&!confirm("Newer data was found in your cloud vault. Load it onto this device?\n\nChanges on this device that haven't synced will be replaced."))act="none";
+   else{S={...S,...rd,th:{...DTH,...(rd.th||{})},tab:"home",sheet:null,open:null};save(1)}}
+  if(act==="push")await sb("/rest/v1/vaults?on_conflict=user_id",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({user_id:CD.a.uid,data:snap(),updated_at:new Date().toISOString()})},t);
+  if(act!=="none"){CD.t=Date.now();CD.msg=act==="push"?"Synced to the cloud.":"Loaded from the cloud."}else CD.msg=CD.msg.startsWith("Sync failed")?"":CD.msg}
+ catch(e){CD.msg="Sync failed: "+e.message}
+ CD.run=false;if(act==="pull"||S.tab==="prof")render()}
+let cq=0;function cloudQueue(){if(!CD.a)return;clearTimeout(cq);cq=setTimeout(cloudSync,3000)}
+function cloudOut(){CD.a=null;CD.msg="";localStorage.removeItem("medvault-auth");render()}
+async function cloudDel(){if(!confirm("Delete your cloud copy? Data on this device is kept."))return;
+ try{await sb("/rest/v1/vaults?user_id=eq."+CD.a.uid,{method:"DELETE"},await cloudToken());CD.msg="Cloud copy deleted.";CD.t=0}catch(e){CD.msg="Delete failed: "+e.message}render()}
+function cloudCard(){const m=CD.msg?`<p class="mut" style="margin:.5rem 0 0">${esc(CD.msg)}</p>`:"";
+ if(!cloudOn())return`<div><h2 style="margin-top:0">Cloud sync</h2><div class="card"><p class="mut" style="margin:0">Off. Add your Supabase details in index.html to turn on optional sync (see SUPABASE-SETUP.md).</p></div></div>`;
+ if(CD.a)return`<div><h2 style="margin-top:0">Cloud sync</h2><div class="card"><p class="mut" style="margin-top:0">Signed in as ${esc(CD.a.email)}.${CD.t?" Last sync: "+new Date(CD.t).toLocaleTimeString()+".":""} Your vault is copied to your cloud account when you make changes.</p><div class="row" style="flex-wrap:wrap"><button onclick="cloudSync()">Sync now</button><button class="g" onclick="cloudOut()">Sign out</button><button class="d" onclick="cloudDel()">Delete cloud copy</button></div>${m}</div></div>`;
+ return`<div><h2 style="margin-top:0">Cloud sync</h2><div class="card"><p class="mut" style="margin-top:0">Optional. Sign in to back up your vault and open it on other devices. Without it, data stays on this device.</p><input id="cle" type="email" placeholder="Email" autocomplete="email"><input id="clp" type="password" placeholder="Password (6+ characters)" autocomplete="current-password"><div class="row"><button onclick="cloudAuth(false)">Sign in</button><button class="g" onclick="cloudAuth(true)">Create account</button></div>${m}</div></div>`}
+const go=t=>set(()=>{S.prev=S.tab;S.tab=t;S.sheet=null;S.open=null});
+const recs=()=>S.records.filter(r=>r.fam===S.fam);
+const log=m=>S.hist.unshift({m,t:new Date().toLocaleString()});
+const person=()=>S.family[S.fam];
+const fmtD=d=>{const x=new Date((d||"")+"T00:00");return isNaN(x)?"—":x.toLocaleDateString(undefined,{month:"short",day:"numeric"})};
+
+/* ---- theme + neural background (port of NeuralBackground.tsx) ---- */
+const NB={key:"",col:{g:"167,139,250",c:"96,165,250",n:"221,214,254",boost:1},on:false,moving:true,raf:0};
+const toRgb=h=>{h=h.trim().replace("#","");if(h.length===3)h=h.split("").map(x=>x+x).join("");return[0,2,4].map(i=>parseInt(h.slice(i,i+2),16))};
+function isDark(){return S.th.mode==="system"?matchMedia("(prefers-color-scheme: dark)").matches:S.th.mode==="dark"}
+function theme(){const r=document.documentElement,th=S.th,dk=isDark();
+ r.lang=S.lang;r.dir=RTL.includes(S.lang)?"rtl":"ltr";
+ r.dataset.mode=dk?"dark":"light";r.dataset.accent=th.accent;r.dataset.size=th.size;r.dataset.motion=th.motion?"on":"off";
+ const m=document.querySelector("meta[name=theme-color]");if(m)m.content=dk?"#0a0a1f":"#f2f4fb";
+ const k=(dk?"d":"l")+th.accent;if(k!==NB.key){NB.key=k;const cs=getComputedStyle(r),g=toRgb(cs.getPropertyValue("--g-"+(dk?"d":"l"))||"#a78bfa"),c=toRgb(cs.getPropertyValue("--c-"+(dk?"d":"l"))||"#60a5fa");
+  NB.col={g:g.join(","),c:c.join(","),n:(dk?g.map(v=>Math.round(v+(255-v)*.55)):g).join(","),boost:dk?1:1.8}}
+ NB.moving=th.motion&&!matchMedia("(prefers-reduced-motion: reduce)").matches;
+ $("#nb").style.display=th.neural?"":"none";
+ if(th.neural&&!NB.on)neuralStart();if(!th.neural&&NB.on){NB.on=false;cancelAnimationFrame(NB.raf)}}
+function neuralStart(){NB.on=true;const cv=$("#nb canvas"),ctx=cv.getContext("2d"),dpr=Math.min(devicePixelRatio||1,2),mouse={x:-9999,y:-9999},LINK=150;
+ let w=0,h=0,nodes=[],pulses=[],crosses=[];
+ const resize=()=>{w=innerWidth;h=innerHeight;cv.width=w*dpr;cv.height=h*dpr;cv.style.width=w+"px";cv.style.height=h+"px";ctx.setTransform(dpr,0,0,dpr,0,0);pulses=[];
+  const n=Math.min(110,Math.floor(w*h/14000));crosses=Array.from({length:14},()=>({x:Math.random()*w,y:Math.random()*h,v:.1+Math.random()*.2}));
+  nodes=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.25,vy:(Math.random()-.5)*.25,r:Math.random()*1.6+.8}))};
+ if(!NB.bound){NB.bound=1;addEventListener("resize",()=>NB.rs&&NB.rs());addEventListener("pointermove",e=>{mouse.x=e.clientX;mouse.y=e.clientY})}
+ NB.rs=resize;resize();
+ const tick=()=>{if(!NB.on)return;ctx.clearRect(0,0,w,h);const mv=NB.moving,{g:G,c:C,n:N,boost:B}=NB.col;
+  if(mv)for(const n of nodes){n.x+=n.vx;n.y+=n.vy;if(n.x<0||n.x>w)n.vx*=-1;if(n.y<0||n.y>h)n.vy*=-1;const dx=n.x-mouse.x,dy=n.y-mouse.y,d=Math.hypot(dx,dy);if(d<120&&d>0){n.x+=dx/d*.6;n.y+=dy/d*.6}}
+  const edges=[];
+  for(let i=0;i<nodes.length;i++){for(let j=i+1;j<nodes.length;j++){const d=Math.hypot(nodes[i].x-nodes[j].x,nodes[i].y-nodes[j].y);if(d<LINK){edges.push([i,j]);ctx.strokeStyle=`rgba(${G},${(1-d/LINK)*.22*B})`;ctx.lineWidth=.7;ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(nodes[j].x,nodes[j].y);ctx.stroke()}}
+   const dm=Math.hypot(nodes[i].x-mouse.x,nodes[i].y-mouse.y);if(dm<200){ctx.strokeStyle=`rgba(${C},${(1-dm/200)*.55})`;ctx.beginPath();ctx.moveTo(nodes[i].x,nodes[i].y);ctx.lineTo(mouse.x,mouse.y);ctx.stroke()}}
+  if(mv&&edges.length&&Math.random()<.08&&pulses.length<14){const [a,b]=edges[Math.floor(Math.random()*edges.length)];pulses.push({a,b,t:0,s:.015+Math.random()*.02})}
+  for(let k=pulses.length-1;k>=0;k--){const p=pulses[k];if(mv)p.t+=p.s;if(p.t>=1){pulses.splice(k,1);continue}const A=nodes[p.a],Bn=nodes[p.b];if(!A||!Bn){pulses.splice(k,1);continue}
+   const x=A.x+(Bn.x-A.x)*p.t,y=A.y+(Bn.y-A.y)*p.t,g=ctx.createRadialGradient(x,y,0,x,y,12);g.addColorStop(0,`rgba(${G},.95)`);g.addColorStop(1,`rgba(${G},0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(x,y,12,0,7);ctx.fill()}
+  ctx.strokeStyle=`rgba(${G},${.18*B})`;ctx.lineWidth=1;
+  for(const c of crosses){if(mv){c.y-=c.v;if(c.y<-20)c.y=h+20}const k=5;ctx.beginPath();ctx.moveTo(c.x-k,c.y);ctx.lineTo(c.x+k,c.y);ctx.moveTo(c.x,c.y-k);ctx.lineTo(c.x,c.y+k);ctx.stroke()}
+  for(const n of nodes){ctx.fillStyle=`rgba(${N},.75)`;ctx.beginPath();ctx.arc(n.x,n.y,n.r,0,7);ctx.fill()}
+  NB.raf=requestAnimationFrame(tick)};tick()}
+
+/* ---- score + insights ---- */
+function vault(){const p=person(),rs=recs(),it=[[10,!!p.blood],[10,!!p.allergies],[10,!!p.emerg],[15,rs.length>0],[10,rs.length>=5],[10,S.docs.length>0],[15,!!S.pin],[10,Date.now()-S.lastBackup<30*864e5],[10,S.rem.length>0||S.places.length>0]];return it.reduce((a,[w,ok])=>a+(ok?w:0),0)}
+function finds(){const o=[],p=person(),rs=recs(),now=Date.now();
+ rs.filter(r=>r.meds).forEach(r=>{const bad=check(r.meds).filter(x=>x[1]==="bad");if(bad.length)o.push({t:"Review: "+r.title,d:bad[0][0]+": "+bad[0][3]+". Confirm with your doctor or pharmacist.",tag:"Action"})});
+ if(rs.some(r=>r.meds)&&!o.length)o.push({t:"Prescriptions within limits",d:"The built-in checker found no over-limit doses or known interactions. It knows only a few medicines, so still confirm with a pharmacist.",tag:"Positive"});
+ if(rs.length&&now-S.lastBackup>30*864e5)o.push({t:"Back up your vault",d:"Your records live only on this device. Download a backup from Profile so they can't be lost.",tag:"Action"});
+ if(!S.pin)o.push({t:"No PIN lock set",d:"Anyone who opens this device can see your records. Set a 4–6 digit PIN in Profile.",tag:"Watch"});
+ const miss=[!p.blood&&"blood type",!p.allergies&&"allergies",!p.emerg&&"emergency contact"].filter(Boolean);
+ if(miss.length)o.push({t:"Emergency card incomplete",d:"Add "+miss.join(", ")+" in Profile so responders have what they need.",tag:"Watch"});
+ const last=rs.map(r=>r.date).sort().pop();if(last&&now-new Date(last+"T00:00")>180*864e5)o.push({t:"No recent records",d:"Your latest record is over six months old. Add new reports and prescriptions to keep the vault current.",tag:"Watch"});
+ const ym=new Date().toISOString().slice(0,7),mc=rs.filter(r=>(r.date||"").startsWith(ym)).length;if(mc)o.push({t:mc+" record"+(mc>1?"s":"")+" added this month",d:"Keeping reports in one place makes visits and follow-ups easier.",tag:"Positive"});
+ if(!o.length)o.push({t:"Vault looks good",d:"Add your first record to start building insights.",tag:"Positive"});return o}
+
+/* ---- shared bits ---- */
+function head(t,s){return`<p class="sub">${s} · <span class="dot ${navigator.onLine?"on":""}"></span>${navigator.onLine?"Online":"Offline, saving on device"}</p>`+(t==="About"||t==="Doctors"?"":who())}
+function who(){return`<div class="chips">${S.family.map((f,i)=>`<button class="${S.fam===i?"":"g"}" onclick="set(()=>S.fam=${i})">${esc(f.n)}${f.rel?" · "+esc(f.rel):""}</button>`).join("")}<button class="g" onclick="addRel()">+ Relative</button></div>`}
+function addRel(){const n=prompt("Relative's name?");if(!n)return;const r=prompt("Relation (mother, father, child...)")||"";set(()=>{S.family.push({n,rel:r,blood:"",allergies:"",emerg:"",vitals:{}});S.fam=S.family.length-1})}
+function card(r){const i=S.records.indexOf(r);return`<div class="glass rc" role="button" tabindex="0" onclick="set(()=>{S.open=${i};S.sheet='detail'})" onkeydown="if(event.key==='Enter')this.click()"><span class="rb">${ABB[r.tag]||"Doc"}</span><span class="rm"><span class="rt">${esc(r.title)}</span><span class="rs">${esc(r.doctor||r.hospital||r.tag)}${r.problem?" · "+esc(r.problem):""}</span></span><span class="rd">${fmtD(r.date)}</span></div>`}
+const shrink=u=>new Promise(res=>{const i=new Image();i.onload=()=>{const s=Math.min(1,1280/Math.max(i.width,i.height)),c=document.createElement("canvas");c.width=i.width*s;c.height=i.height*s;c.getContext("2d").drawImage(i,0,0,c.width,c.height);res(c.toDataURL("image/jpeg",.6))};i.onerror=()=>res(u);i.src=u});
+
+/* ---- Home ---- */
+function orb(score){const r=78,c=2*Math.PI*r,nodes=[[40,70],[260,60],[30,200],[270,210],[150,18],[150,282]],off=c*(1-score/100);
+ return`<div class="orb"><svg viewBox="0 0 300 300"><defs><radialGradient id="core"><stop offset="0" stop-color="var(--glow)" stop-opacity=".35"/><stop offset="1" stop-color="var(--pri)" stop-opacity="0"/></radialGradient><linearGradient id="arcg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--glow)"/><stop offset="1" stop-color="var(--cyan)"/></linearGradient></defs>
+ <circle cx="150" cy="150" r="120" fill="url(#core)"/>${nodes.map(([x,y],i)=>`<line x1="150" y1="150" x2="${x}" y2="${y}" stroke="var(--glow)" stroke-opacity=".3" stroke-dasharray="3 6"><animate attributeName="stroke-dashoffset" from="0" to="-36" dur="${3+i*.5}s" repeatCount="indefinite"/></line><circle cx="${x}" cy="${y}" r="4" fill="var(--soft)"><animate attributeName="opacity" values=".3;1;.3" dur="${2+i*.4}s" repeatCount="indefinite"/></circle>`).join("")}
+ <g transform="rotate(-90 150 150)"><circle cx="150" cy="150" r="${r}" fill="var(--bg)" stroke="var(--line)" stroke-width="8"/><circle class="arc" cx="150" cy="150" r="${r}" fill="none" stroke="url(#arcg)" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}" style="--from:${c};animation:arc 1.6s cubic-bezier(.2,.7,.2,1) both;filter:drop-shadow(0 0 6px var(--glow))"/></g></svg>
+ <span class="ring"></span><div class="ct"><div><div class="n">${score}</div><div class="lab" style="margin-top:.25rem">Vault score</div></div></div></div>`}
+function ecg(){const d="M0 30 H40 l5 -3 5 3 H80 l4 5 5 -28 6 40 5 -17 H140 l5 -5 6 5 H200 l4 5 5 -28 6 40 5 -17 H300";
+ return`<svg viewBox="0 0 300 60" preserveAspectRatio="none" style="height:3.5rem;width:100%;display:block"><path d="${d}" fill="none" stroke="var(--line)" stroke-width="1.5"/><path d="${d}" fill="none" stroke="var(--glow)" stroke-width="2" stroke-linecap="round" pathLength="100" stroke-dasharray="22 78" style="filter:drop-shadow(0 0 4px var(--glow))"><animate attributeName="stroke-dashoffset" from="22" to="-78" dur="2.6s" repeatCount="indefinite"/></path></svg>`}
+function quote(){const q=Q[qi%Q.length];return`<div class="glass r2 row qt" style="padding:1rem;cursor:pointer" onclick="qi++;render()"><div class="av2">${q[0]}</div><div><i style="font-style:normal;font-size:.8rem;line-height:1.5">“${esc(q[1])}”</i><div class="mut" style="font-size:.7rem;margin-top:.25rem">— ${esc(q[2])}</div></div></div>`}
+let qi=Math.floor(Date.now()/864e5);
+function home(){const v=person().vitals||{},r=recs().slice(0,3),sc=vault(),nx=[...S.rem].sort((a,b)=>(a.d||"~").localeCompare(b.d||"~"))[0];
+ const tiles=[["SpO₂",v.spo2,"%"],["Blood pressure",v.bp,"mmHg"],["Temp",v.temp,"°C"],["Weight",v.wt,"kg"]];
+ const dt=nx&&nx.d?new Date(nx.d.replace(" ","T")):null,ok=dt&&!isNaN(dt);
+ return`<div class="stack">${orb(sc)}
+ <div class="glass r3" style="padding:1rem;cursor:pointer" role="button" tabindex="0" onclick="set(()=>S.sheet='vitals')"><div class="row sp"><div><div class="lab">Heart rate · last logged</div><div class="fd" style="font-size:1.875rem">${v.hr?esc(v.hr):"—"} <span class="mono mut" style="font-size:.75rem">bpm</span></div></div>${Cross("i5 pulse").replace('<svg','<svg style="color:var(--glow)"')}</div>${ecg()}</div>
+ <div class="grid">${tiles.map(([l,x,u])=>`<div class="glass r2 tile" style="cursor:pointer" role="button" tabindex="0" onclick="set(()=>S.sheet='vitals')"><div class="k">${l}</div><div class="v">${x?esc(x):"—"} <small>${x?u:""}</small></div></div>`).join("")}</div>
+ <div class="g4">${[["scan","Scan","go('add')"],["steth","Doctors","go('prov')"],["tools","Tools","go('tools')"],["sos","Emergency","set(()=>S.sheet='emerg')"]].map(([i,l,f])=>`<button class="qa" onclick="${f}"><span class="ci">${Ic(i)}</span>${l}</button>`).join("")}</div>
+ ${quote()}
+ <div class="glass r3 row" style="padding:1rem;cursor:pointer" role="button" tabindex="0" onclick="set(()=>S.sheet='rem')">${ok?`<div class="datebox"><span>${dt.toLocaleString(undefined,{month:"short"})}<br><b>${dt.getDate()}</b></span></div>`:`<div class="datebox">${Ic("bell")}</div>`}<div style="flex:1;min-width:0"><div style="font-size:.875rem;font-weight:500">${nx?esc(nx.t):"No reminders yet"}</div><div class="mut" style="font-size:.75rem">${nx?(ok?dt.toLocaleTimeString(undefined,{hour:"numeric",minute:"2-digit"}):"Reminder"):"Tap to add a pill or follow-up reminder"}</div></div><span class="mut">${Ic("chev","i4")}</span></div>
+ <div><h2 style="margin-top:0">Recent uploads</h2>${r.map(card).join("")||'<p class="mut">No records yet. Tap + to add your first one.</p>'}</div></div>`}
+
+/* ---- Records ---- */
+function recList(){const q=S.q.toLowerCase(),l=recs().filter(r=>(S.tag==="All"||r.tag===S.tag)&&(S.br==="All"||r.branch===S.br)&&(r.title+r.doctor+r.hospital+r.date+r.tag+(r.notes||"")+(r.problem||"")+(r.meds||"")).toLowerCase().includes(q));return byYear(l)}
+function rec(){return head("My Records",esc(person().n)+"'s vault")+`<input placeholder="${t("search")}" value="${esc(S.q)}" oninput="S.q=this.value;$('#rl').innerHTML=recList()">
+ <div class="chips">${["All",...TAGS].map(x=>`<button class="${S.tag===x?"":"g"}" onclick="set(()=>S.tag='${x}')">${x}</button>`).join("")}</div><div class="chips">${["All",...Object.keys(BR)].map(b=>`<button class="${S.br===b?"":"g"}" onclick="set(()=>S.br='${b}')">${b}</button>`).join("")}</div><div id="rl">${recList()}</div>`}
+let pend=null;
+function add(){return head("Add record","Saving for "+esc(person().n))+`<div class="card"><input id="f" type="file" accept="image/*,application/pdf" capture="environment" onchange="pick(this)">
+ <div id="pv"></div><input id="t" placeholder="Title (e.g. CBC report)"><select id="g">${TAGS.map(x=>`<option>${x}</option>`).join("")}</select><select id="br">${Object.keys(BR).map(b=>`<option ${b==="General"?"selected":""}>${b}</option>`).join("")}</select>
+ <input id="dt" type="date" value="${new Date().toISOString().slice(0,10)}"><input id="pb" placeholder="Health problem / diagnosis"><textarea id="md" rows="2" placeholder="Medicines & dosage (from prescription)"></textarea><input id="dr" placeholder="Doctor"><input id="h" placeholder="Hospital / clinic">
+ <textarea id="n" rows="3" placeholder="Symptoms or questions for the doctor"></textarea><button style="width:100%" onclick="saveRec()">Save to vault</button></div>`}
+function pick(el){const f=el.files[0];if(!f)return;const rd=new FileReader();rd.onload=async()=>{let u=rd.result;if(f.type.startsWith("image"))u=await shrink(u);pend={name:f.name,url:u.length<450000?u:null,type:f.type.startsWith("image")?"image/jpeg":f.type};$("#pv").innerHTML=f.type.startsWith("image")&&pend.url?`<img class="doc" src="${pend.url}">`:`<p class="mut">📄 ${esc(f.name)}${pend.url?"":" (too large to keep a preview)"}</p>`;if(!$("#t").value)$("#t").value=f.name.replace(/\.\w+$/,"")};rd.readAsDataURL(f)}
+function saveRec(){const x=$("#t").value.trim();if(!x){$("#t").placeholder="Title required";return}
+ set(()=>{S.records.unshift({fam:S.fam,title:x,tag:$("#g").value,branch:$("#br").value,date:$("#dt").value,doctor:$("#dr").value,hospital:$("#h").value,notes:$("#n").value,problem:$("#pb").value,meds:$("#md").value,file:pend});pend=null;log("Added "+x);S.tab="rec"})}
+function detailBody(){const r=S.records[S.open];if(!r)return"";
+ return`<div class="row" style="margin-bottom:.5rem"><span class="tag">${esc(r.tag)}</span><span class="mut">${esc(r.date)}${r.branch?" · "+esc(r.branch):""}</span></div><p class="mut" style="margin:0">${esc([r.doctor,r.hospital].filter(Boolean).join(" · ")||"No doctor or hospital added")}</p>
+ ${r.problem?`<h2>Problem</h2><div class="card">${esc(r.problem)}</div>`:""}${r.meds?`<h2>Medicines</h2><div class="card" style="white-space:pre-wrap">${esc(r.meds)}</div>`:""}${r.file&&r.file.url?(r.file.type.startsWith("image")?`<img class="doc" src="${r.file.url}" style="touch-action:pinch-zoom" alt="">`:`<a href="${r.file.url}" download="${esc(r.file.name)}">📄 ${esc(r.file.name)}</a>`):""}
+ <h2>Notes</h2><textarea rows="4" onchange="S.records[S.open].notes=this.value;save()">${esc(r.notes)}</textarea>
+ <h2>Share with</h2>${S.docs.map((d,i)=>`<div class="card row sp"><span>${esc(d.n)}</span><button class="sw ${d.shared[S.open]?"on":""}" role="switch" aria-checked="${!!d.shared[S.open]}" aria-label="Share with ${esc(d.n)}" onclick="shareTog(${i})"></button></div>`).join("")||'<p class="mut">Add a doctor first.</p>'}
+ <div class="row" style="margin-top:1rem;flex-wrap:wrap">${r.meds?`<button onclick="set(()=>{RX.text=S.records[S.open].meds;RX.rows=check(RX.text);S.open=null;S.sheet=null;S.prev=S.tab;S.tab='tools';S.tl='rx'})">Check Rx</button>`:""}<button class="g" onclick="exportRec()">Export</button><button class="d" onclick="if(confirm('Delete record?'))set(()=>{S.records.splice(S.open,1);S.open=null;S.sheet=null})">Delete</button></div>`}
+function shareTog(i){const d=S.docs[i],k=S.open;set(()=>{d.shared[k]=!d.shared[k];log((d.shared[k]?"Shared ":"Revoked ")+S.records[k].title+" → "+d.n)})}
+function exportRec(){const r=S.records[S.open];const b=new Blob([JSON.stringify({...r,file:r.file&&r.file.name},null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=r.title+".json";a.click()}
+
+/* ---- Insights ---- */
+function ins(){const rs=recs(),now=new Date(),ms=[];for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);ms.push({k:d.toISOString().slice(0,7).replace(/^(\d{4})-(\d\d)$/,"$1-$2"),l:d.toLocaleString(undefined,{month:"narrow"})})}
+ const key=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;ms.forEach((m,i)=>{const d=new Date(now.getFullYear(),now.getMonth()-(5-i),1);m.k=key(d);m.v=rs.filter(r=>(r.date||"").startsWith(m.k)).length});
+ const mx=Math.max(1,...ms.map(m=>m.v)),dl=ms[5].v-ms[4].v,f=finds(),c={};rs.forEach(r=>c[r.tag]=(c[r.tag]||0)+1);const e=Object.entries(c),cm=Math.max(1,...Object.values(c));
+ return head("Insights",esc(person().n)+"'s vault")+`<div class="stack"><div class="glass r3" style="padding:1.25rem"><div class="row sp" style="margin-bottom:1rem"><div class="lab">Records added · 6 months</div><span class="mono" style="font-size:.75rem;color:var(--glow)">${dl>0?"+":""}${dl}</span></div>
+ <div class="bars">${ms.map((m,i)=>`<div><i style="height:${Math.max(6,m.v/mx*100)}%;opacity:${i===5?1:.5}" title="${m.v}"></i><span>${m.l}</span></div>`).join("")}</div></div>
+ <div class="lab" style="color:var(--glow);display:flex;align-items:center;gap:.5rem"><span class="pulse" style="width:6px;height:6px;border-radius:50%;background:var(--glow)"></span>Neural analysis · ${f.length} finding${f.length>1?"s":""}</div>
+ ${f.map(x=>`<div class="glass r2" style="padding:1rem"><div class="row sp" style="align-items:flex-start"><div style="font-size:.875rem;font-weight:500">${esc(x.t)}</div><span class="tag ${x.tag}">${x.tag}</span></div><p class="mut" style="margin:.5rem 0 0">${esc(x.d)}</p></div>`).join("")}
+ ${e.length?`<div class="glass r3" style="padding:1.25rem"><div class="lab" style="margin-bottom:.5rem">By record type</div>${e.map(([k,v])=>`<div class="hbar"><span class="n">${esc(k)}</span><div class="tr"><i style="width:${v/cm*100}%"></i></div><b style="width:1.25rem;text-align:right">${v}</b></div>`).join("")}</div>`:""}</div>`}
+
+/* ---- Doctors ---- */
+function prov(){return head("Doctors","Manage who can see your records")+S.docs.map((d,i)=>`<div class="card"><div class="row sp"><div><b>${esc(d.n)}</b><div class="mut">${esc(d.sp)} · ${Object.values(d.shared).filter(Boolean).length} records shared</div></div><button class="g" aria-label="Remove ${esc(d.n)}" onclick="set(()=>S.docs.splice(${i},1))">✕</button></div></div>`).join("")+
+ `<div class="card"><input id="dn" placeholder="Doctor / clinic name"><input id="ds" placeholder="Specialty"><button style="width:100%" onclick="addDoc()">Add provider</button></div>`}
+function addDoc(){const n=$("#dn").value.trim();if(n)set(()=>S.docs.push({n,sp:$("#ds").value||"—",shared:{}}))}
+
+/* ---- Profile ---- */
+function prof(){const p=person(),ini=(p.n||"?").split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase(),nr=recs().length;
+ const f=(k,ph)=>`<input value="${esc(p[k]||"")}" placeholder="${ph}" onchange="person().${k}=this.value;save();render()">`;
+ return head("Profile","Basic health info")+`<div class="stack"><div class="glass r3" style="padding:1.25rem"><div class="row" style="gap:1rem"><div class="av">${esc(ini)}</div><div><div class="fd" style="font-size:1.125rem">${esc(p.n)}</div><div class="mono mut" style="font-size:11px">${nr} record${nr===1?"":"s"}${p.rel?" · "+esc(p.rel):""}</div></div></div>
+ <div class="grid" style="grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:1rem;text-align:center">${[[p.blood,"Blood"],[p.allergies,"Allergy"],[p.emerg,"Emergency"]].map(([v,l])=>`<div style="border:1px solid var(--line);border-radius:.75rem;padding:.6rem .25rem;min-width:0"><div style="font-size:.8rem;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${v?esc(v):"—"}</div><div class="mono mut" style="font-size:9px;text-transform:uppercase">${l}</div></div>`).join("")}</div></div>
+ <div class="card" style="margin:0"><div class="lab" style="margin-bottom:.6rem">Details</div><input value="${esc(p.n)}" placeholder="Name" onchange="person().n=this.value;save();render()">${S.fam?f("rel","Relation to you"):""}${f("blood","Blood type")}${f("allergies","Allergies")}${f("emerg","Emergency contact (name and phone)")}</div>
+ <div class="glass r3 divide">
+  <button class="li row-btn" onclick="set(()=>S.sheet='theme')"><span class="row"><span class="ci">${Ic("sliders")}</span><span><span class="t" style="display:block">Customise theme</span><span class="s" style="display:block">Dark mode, accent colour, text size</span></span></span>${Ic("chev","i4")}</button>
+  <button class="li row-btn" onclick="go('prov')"><span class="row"><span class="ci">${Ic("steth")}</span><span><span class="t" style="display:block">Doctors &amp; sharing</span><span class="s" style="display:block">${S.docs.length} provider${S.docs.length===1?"":"s"}</span></span></span>${Ic("chev","i4")}</button>
+  <button class="li row-btn" onclick="go('tools')"><span class="row"><span class="ci">${Ic("tools")}</span><span><span class="t" style="display:block">Tools</span><span class="s" style="display:block">Prescription check, branches, nearby</span></span></span>${Ic("chev","i4")}</button>
+  <button class="li row-btn" onclick="go('about')"><span class="row"><span class="ci">ℹ️</span><span><span class="t" style="display:block">About, privacy &amp; feedback</span><span class="s" style="display:block">Version ${VER}</span></span></span>${Ic("chev","i4")}</button></div>
+ <div><h2 style="margin-top:0">🌐 ${t("lang")}</h2><div class="card"><select style="margin:0" onchange="set(()=>S.lang=this.value)">${Object.entries(LN).sort((a,b)=>a[1].localeCompare(b[1])).map(([k,v])=>`<option value="${k}" ${S.lang===k?"selected":""}>${v}</option>`).join("")}</select></div></div>
+ <div><h2 style="margin-top:0">Security</h2><div class="card"><input id="np" type="password" inputmode="numeric" maxlength="6" placeholder="${S.pin?"Change":"Set"} PIN lock (4-6 digits)"><div class="row"><button onclick="setPin()">Save PIN</button>${S.pin?`<button class="g" onclick="set(()=>S.pin='')">Remove</button>`:""}</div></div></div>
+ ${cloudCard()}
+ <div><h2 style="margin-top:0">Backup</h2><div class="card"><p class="mut" style="margin-top:0">Everything is stored on this device. Back up to a file you control.${S.lastBackup?" Last backup: "+new Date(S.lastBackup).toLocaleDateString()+".":""}</p><div class="row"><button onclick="backup()">Download backup</button><label class="btn g">Restore<input type="file" accept=".json" hidden onchange="restore(this)"></label></div></div></div>
+ <div><h2 style="margin-top:0">Activity</h2>${S.hist.slice(0,15).map(h=>`<div class="card mut" style="padding:.75rem 1rem">${esc(h.m)}<br><span class="mono" style="font-size:10px">${esc(h.t)}</span></div>`).join("")||'<p class="mut">No activity yet.</p>'}</div>
+ <p class="mono mut" style="text-align:center;font-size:10px;text-transform:uppercase;letter-spacing:.1em;margin:0">${CD.a?"Cloud sync on":"Stored on this device only"} · Not medical advice</p>
+ <button class="d" style="width:100%" onclick="if(confirm('Erase all data on this device?')){localStorage.removeItem('medvault');location.reload()}">Erase all data</button></div>`}
+function setPin(){const v=$("#np").value;if(/^\d{4,6}$/.test(v))set(()=>{S.pin=v;S.unlocked=true;log("PIN lock set")});else{$("#np").value="";$("#np").placeholder="Use 4 to 6 digits"}}
+function backup(){const b=new Blob([JSON.stringify(S)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="medvault-backup.json";a.click();S.lastBackup=Date.now();save();render()}
+function restore(el){const f=el.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const x=JSON.parse(r.result);S={...S,...x,th:{...DTH,...(x.th||{})},tab:"home",sheet:null,open:null};save();render()}catch(e){alert("Invalid file")}};r.readAsText(f)}
+function tryPin(){if($("#pin").value===S.pin){S.unlocked=true;render()}else{$("#pin").value="";$("#pin").placeholder="Wrong PIN"}}
+function addRem(){const x=$("#rt").value.trim();if(x)set(()=>S.rem.push({t:x,d:$("#rd").value.replace("T"," ")}))}
+function saveVitals(){const v={hr:$("#v_hr").value.trim(),spo2:$("#v_spo2").value.trim(),bp:$("#v_bp").value.trim(),temp:$("#v_temp").value.trim(),wt:$("#v_wt").value.trim(),at:Date.now()};set(()=>{person().vitals=v;log("Logged vitals");S.sheet=null})}
+const setTh=(k,v)=>set(()=>S.th[k]=v);
+
+/* ---- Sheets ---- */
+function sheetHtml(){const s=S.sheet;if(!s)return"";let title="",body="",done="Done";
+ if(s==="theme"){title="Customise theme";const th=S.th,seg=(k,o)=>`<div class="seg">${o.map(([v,l])=>`<button class="${th[k]===v?"on":""}" aria-pressed="${th[k]===v}" onclick="setTh('${k}','${v}')">${l}</button>`).join("")}</div>`,tg=(k,l,sb)=>`<div class="li" style="padding:.75rem 0"><div><div class="t">${l}</div><div class="s">${sb}</div></div><button class="sw ${th[k]?"on":""}" role="switch" aria-checked="${th[k]}" aria-label="${l}" onclick="setTh('${k}',${!th[k]})"></button></div>`;
+  body=`<h2>Appearance</h2>${seg("mode",[["dark","Dark"],["light","Light"],["system","System"]])}<h2>Accent colour</h2><div class="sw-sw">${ACC.map(([k,l,c])=>`<button class="${th.accent===k?"on":""}" aria-label="${l}" aria-pressed="${th.accent===k}" onclick="setTh('accent','${k}')"><span class="c" style="background:${c}">${th.accent===k?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#0a0a1f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>':""}</span>${l}</button>`).join("")}</div><h2>Text size</h2>${seg("size",[["sm","Compact"],["md","Default"],["lg","Large"]])}<h2>Effects</h2><div class="divide">${tg("neural","Neural background","Animated neurons and synapses")}${tg("motion","Motion","Animations and live pulses")}</div><button class="g" style="width:100%;margin-top:1.5rem;color:var(--mut)" onclick="set(()=>S.th={...DTH})">Reset to default</button>`}
+ else if(s==="rem"){title="Reminders";body=S.rem.map((x,i)=>`<div class="card row sp"><span>⏰ ${esc(x.t)} <span class="mut">${esc(x.d)}</span></span><button class="g" aria-label="Delete reminder" onclick="set(()=>S.rem.splice(${i},1))">✕</button></div>`).join("")||'<p class="mut">No reminders yet.</p>';body+=`<div class="card"><input id="rt" placeholder="Pill or follow-up..."><input id="rd" type="datetime-local"><button style="width:100%" onclick="addRem()">Add reminder</button></div><p class="mut">Reminders are notes inside the app. They don't send phone notifications.</p>`}
+ else if(s==="vitals"){title="Log vitals";const v=person().vitals||{};body=`<p class="mut" style="margin-top:0">Enter what you measured. Values are saved on this device for ${esc(person().n)}.</p>${[["hr","Heart rate (bpm)","numeric"],["spo2","SpO₂ (%)","numeric"],["bp","Blood pressure (e.g. 118/76)","text"],["temp","Temperature (°C)","decimal"],["wt","Weight (kg)","decimal"]].map(([k,p,m])=>`<input id="v_${k}" inputmode="${m}" placeholder="${p}" value="${esc(v[k]||"")}">`).join("")}<button style="width:100%" onclick="saveVitals()">Save</button>${v.at?`<p class="mut">Last logged ${new Date(v.at).toLocaleString()}</p>`:""}`}
+ else if(s==="emerg"){title="Emergency card";const p=person(),ph=String(p.emerg||"").replace(/[^\d+]/g,"");done="Close";body=`<div class="card"><div class="lab">Name</div><div style="font-size:1.1rem;margin-bottom:.75rem">${esc(p.n)}</div><div class="lab">Blood type</div><div style="font-size:1.1rem;margin-bottom:.75rem">${p.blood?esc(p.blood):'<span class="mut">Not set</span>'}</div><div class="lab">Allergies</div><div style="font-size:1.1rem;margin-bottom:.75rem">${p.allergies?esc(p.allergies):'<span class="mut">Not set</span>'}</div><div class="lab">Emergency contact</div><div style="font-size:1.1rem">${p.emerg?esc(p.emerg):'<span class="mut">Not set</span>'}</div></div>
+  <div class="row" style="flex-wrap:wrap">${ph.length>=5?`<a class="btn" href="tel:${esc(ph)}">Call contact</a>`:""}<button class="g" onclick="set(()=>{S.sheet=null;S.prev=S.tab;S.tab='tools';S.tl='near'});findNear()">📍 Nearest hospital</button>${p.blood&&p.allergies&&p.emerg?"":`<button class="g" onclick="go('prof')">Complete profile</button>`}</div><p class="mut" style="margin-top:1rem">In an emergency, call your local emergency number first.</p>`}
+ else if(s==="wn"){title="What's new in "+VER;done="Got it";body=clHtml([CL[0]])+`<button class="g" style="width:100%" onclick="set(()=>{S.seen=VER;S.sheet=null;S.prev=S.tab;S.tab='about'})">See all updates</button>`}
+ else if(s==="detail"){const r=S.records[S.open];if(!r)return"";title=esc(r.title);body=detailBody();done="Back"}
+ return`<div class="shw ${window.SHK!==s?"in":""}"><div class="bd" onclick="closeSheet()"></div><div class="sh glass" role="dialog" aria-modal="true" aria-label="${esc(title)}"><div class="grab"></div><div class="row sp" style="margin-bottom:.25rem"><h1 style="min-width:0">${title}</h1><button class="g" style="padding:.4rem 1rem;font-size:.75rem" onclick="closeSheet()">${done}</button></div>${body}</div></div>`}
+function closeSheet(){set(()=>{if(S.sheet==="wn")S.seen=VER;S.sheet=null;S.open=null})}
+
+/* ---- Render ---- */
+const TT=()=>({home:t("hello")+", "+esc(person().n),rec:t("rec"),add:"Add record",ins:"Insights",prof:t("prof"),tools:TL[S.lang]||"Tools",prov:t("prov"),about:"About"});
+const BACKT=["tools","prov","about"],NAVON={tools:"home",prov:"prof",about:"prof"};
+const IL={en:"Insights",bn:"ইনসাইট",hi:"इनसाइट",ar:"رؤى",ur:"بصیرت",es:"Análisis",fr:"Analyses",de:"Einblicke",pt:"Análises",ru:"Анализ",tr:"Öngörüler",id:"Wawasan",zh:"洞察",ja:"インサイト"};
+function render(){theme();const A=$("#app");document.body.classList.toggle("lk",!!S.sheet);
+ if(S.pin&&!S.unlocked){A.innerHTML=`<div id="lock"><div class="mk">${Cross("i5")}</div><div class="lab" style="color:var(--glow)">MedVault</div><h1 style="margin:.25rem 0 .5rem">Enter your PIN</h1><input id="pin" type="password" inputmode="numeric" maxlength="6" aria-label="PIN" style="max-width:200px;text-align:center" onkeydown="if(event.key==='Enter')tryPin()"><button onclick="tryPin()">Unlock</button></div>`;return}
+ const fx=S.tab!==window.LK;window.LK=S.tab;if(fx)scrollTo(0,0);
+ const on=NAVON[S.tab]||S.tab,back=BACKT.includes(S.tab),nav=[["home","home",t("home")],["rec","file",t("rec")],["add","plus","Add record"],["ins","spark",IL[S.lang]||IL.en],["prof","user",t("prof")]];
+ const shk=S.sheet||"",sh=sheetHtml();window.SHK=shk;
+ A.innerHTML=`<div class="wrap"><header class="top"><div class="brand">${back?`<button class="mk" aria-label="Back" onclick="go(S.prev&&S.prev!==S.tab?S.prev:'home')">${Ic("back","i4")}</button>`:`<span class="mk">${Cross("i4")}</span>`}<div style="min-width:0"><div class="lab">MedVault</div><h1 class="${fx?"rise":""}">${TT()[S.tab]}</h1></div></div>
+ <div class="hb"><button class="rb2" aria-label="Customise theme" onclick="set(()=>S.sheet='theme')">${Ic("sliders","i4")}</button><button class="rb2" aria-label="Reminders" onclick="set(()=>S.sheet='rem')">${Ic("bell","i4")}${S.rem.length?'<span class="pip"></span>':""}</button></div></header>
+ <main class="${fx?"rise":""}">${({home,rec,add,ins,prof,tools,prov,about})[S.tab]()}</main></div>
+ <nav class="bt"><div class="in glass">${nav.map(([k,i,l])=>`<button class="${on===k?"on":""} ${k==="add"?"plus":""}" aria-label="${l}" ${on===k?'aria-current="page"':""} onclick="go('${k}')">${Ic(i,k==="add"?"i5":"i18")}${k==="add"?"":l}</button>`).join("")}</div></nav>${sh}`}
+
+/* ---- boot ---- */
+addEventListener("online",()=>{render();cloudSync()});addEventListener("offline",render);
+matchMedia("(prefers-color-scheme: dark)").addEventListener&&matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(S.th.mode==="system")render()});
+try{navigator.serviceWorker&&navigator.serviceWorker.register("sw.js")}catch(e){}
+if(!S.seen)S.seen=S.records.length?"1.0.0":VER;if(S.seen!==VER)S.sheet="wn";save(1);
+setTimeout(()=>$("#splash").classList.add("out"),1300);setTimeout(()=>{const s=$("#splash");s&&s.remove()},2000);
+render();cloudSync();
+
+</script></body></html>
